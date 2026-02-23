@@ -1,0 +1,1 @@
+<g:message code="${value}" default="${value}"/>

@@ -1,0 +1,439 @@
+package caesar
+
+import caesar.EmpiricalStudy
+import caesar.OriginalStudy
+import caesar.Replication
+import caesar.Change
+import caesar.ValidityEffect
+
+class BootStrap {
+
+    // Populate mindfulness studies
+
+    def populateMindfulness() {
+        EmpiricalStudy.withTransaction { status ->
+            try {
+                OriginalStudy mind1 = new OriginalStudy (
+                    acronym  : 'MIND#1',
+                    site     : 'ETSII de la US',
+                    date     : 'Primer semestre del curso 2013-2014',
+                    goal     :
+'''
+Estudiar si la práctica de mindfulness (causa) mejora la productividad en 
+modelado conceptual (efecto) en ingenieros de requisitos (población).
+''',
+                    description :
+'''
+Tomando como muestra de la población a los estudiantes de la asignatura IISSI 
+de 2º año del Grado de Ingeniería de Software de la Universidad de Sevilla 
+(muestra), un grupo (grupo experimental) asistió a sesiones de mindfulness de 
+10 minutos durante 4 semanas, 4 días por semana (tratamiento grupo experimental), 
+mientras que un segundo grupo (grupo de control) asistió a un taller de cómo 
+hablar en público a modo de placebo (tratamiento grupo de control). 
+Los estudiantes realizaron dos ejercicios de modelado conceptual, uno antes 
+y otro después del tratamiento (diseño experimental pre-post), que se puntuaron 
+comparándolos con una solución de referencia (procedimiento de medida). Se 
+comparó el rendimiento de ambos grupos en términos de calidad (similitud con 
+la solución de referencia) y productividad (similitud en porcentaje por unidad 
+de tiempo) (métricas).
+'''
+                ).save()
+
+                Replication mind2 = new Replication (
+                    acronym   : 'MIND#2',
+                    base      : mind1,
+                    type      : ReplicationType.INTERNAL,
+                    purposes  : [Purpose.VERIFY_RESULTS, Purpose.OVERCOME_LIMITATIONS],
+                    site      : 'ETSII de la US',
+                    date      : 'Primer semestre del curso 2014-2015',
+                    comments  : 'Primera replicación tras el el experimento original',
+                ).save()
+
+                mind1.addToReplications( mind2 ).save()
+
+                Replication mind3 = new Replication (
+                    acronym   : 'MIND#3',
+                    base      : mind2,
+                    type      : ReplicationType.INTERNAL,
+                    purposes  : [Purpose.VERIFY_RESULTS],
+                    site      : 'ETSII de la US',
+                    date      : 'Primer semestre del curso 2015-2016'
+                ).save()
+
+                mind2.addToReplications( mind3 ).save()
+
+                Change change1 = new Change (
+                    name                 : 'Asignación aleatoria de sujetos a grupos',
+                    dimension            : ChangeDimension.PROTOCOL,
+                    affectedElement      : ProtocolElement.EXPERIMENTAL_DESIGN,
+                    baseSituation        : 'La asignación a grupos se basó en las preferencias de los sujetos.',
+                    replicationSituation : 'La asignación a grupos fue aleatoria.',
+                    purpose              : 'Mitigar el sesgo de selección y asignación y evitar limitaciones del análisis estadístico.'
+                )
+
+                ValidityEffect effect1 = new ValidityEffect (
+                    validity  : Validity.CONCLUSION_VALIDITY,
+                    effect    : Effect.INCREASE,
+                    rationale : 'mejora la potencia de los tests estadísticos aplicables'
+                )
+
+                ValidityEffect effect2 = new ValidityEffect (
+                    validity  : Validity.INTERNAL_VALIDITY,
+                    effect    : Effect.INCREASE,
+                    rationale : 'elimina el sesgo de asignación'
+                )
+
+                change1.addToEffects( effect1 )
+                       .addToEffects( effect2 )
+                       .save()
+
+                Change change2 = new Change (
+                    name                 : 'Aumento de la duración del tratamiento',
+                    dimension            : ChangeDimension.OPERATIONALIZATION,
+                    affectedElement      : OperationalizationElement.TREATMENT,
+                    baseSituation        : 'El tratamiento se aplicó durante 4 semanas, 4 días por semana, en sesiones de 10 minutos.',
+                    replicationSituation : 'El tratamiento se aplicó durante 6 semanas, 4 días por semana, en sesiones de 12 minutos.',
+                    purpose              : 'Obtener una mejora estadísticamente significativa de la efectividad en modelado conceptual'
+                )
+
+                ValidityEffect effect3 = new ValidityEffect (
+                    validity  : Validity.CONSTRUCT_VALIDITY,
+                    effect    : Effect.INCREASE,
+                    rationale : 'refleja mejor el efecto de la práctica de mindfulness'
+                )
+
+                ValidityEffect effect4 = new ValidityEffect (
+                    validity : Validity.INTERNAL_VALIDITY,
+                    effect   : Effect.INCREASE,
+                    rationale : 'refuerza el efecto del tratamiento sobre el de otros posibles factores'
+                )
+
+                change2.addToEffects( effect3 )
+                       .addToEffects( effect4 )
+                       .save()
+
+                Change change3 = new Change (
+                    name                 : 'Tratamiento nulo del grupo de control',
+                    dimension            : ChangeDimension.OPERATIONALIZATION,
+                    affectedElement      : OperationalizationElement.TREATMENT,
+                    baseSituation        : 'El grupo de control recibió como tratamiento un placebo consistente en un taller de oratoria.',
+                    replicationSituation : 'El grupo de control recibió un tratamiento nulo, ya que el taller de oratoria se pospuso hasta después de la segunda tarea.',
+                    purpose              : 'Mitigar el potencial factor distorsionador del placebo en los resultados experimentales'
+                )
+
+                ValidityEffect effect5 = new ValidityEffect (
+                    validity : Validity.INTERNAL_VALIDITY,
+                    effect   : Effect.INCREASE,
+                    rationale : 'elimina la posibilidad de que el placebo pueda tener algún efecto sobre los resultados experimentales'
+                )
+
+                change3.addToEffects( effect5 )
+                       .save()
+
+                mind2.addToChanges( change1 )
+                     .addToChanges( change2 )
+                     .addToChanges( change3 )
+                     .save()
+
+                Change change4 = new Change (
+                    name                 : 'Cambio en el orden de los ejercicios de modelado conceptual',
+                    dimension            : ChangeDimension.PROTOCOL,
+                    affectedElement      : ProtocolElement.EXPERIMENTAL_DESIGN,
+                    baseSituation        : 'El orden de realización de los ejercicios fue ERASMUS y luego EoDP.',
+                    replicationSituation : 'El orden de realización de los ejercicios fue EoDP y luego ERASMUS.',
+                    purpose              : 'Estudiar el potencial impacto del ejercicio de modelado conceptual en los resultados experimentales',
+                )
+
+                ValidityEffect effect6 = new ValidityEffect (
+                    validity : Validity.INTERNAL_VALIDITY,
+                    effect   : Effect.INCREASE,
+                    rationale : 'permite estudiar el efecto de la diferencia entre tareas en los resultados experimentales'
+                )
+
+                ValidityEffect effect7 = new ValidityEffect (
+                    validity : Validity.CONCLUSION_VALIDITY,
+                    effect   : Effect.INCREASE,
+                    rationale : 'permite analizar y ajustar el efecto de la diferencia entre tareas en los resultados experimentales'
+                )
+
+                change4.addToEffects( effect6 )
+                       .addToEffects( effect7 )
+                       .save()
+
+                mind3.addToChanges( change4 ).save()
+            }
+            catch(Exception e){
+                println "ERROR in populateMindfulness ---> ${e.getMessage()}"
+                status.setRollbackOnly()
+            }
+        }
+    }
+
+    // Populate suelo studies
+
+    def populateSuelo() {
+        println "populateSuelo()"
+
+        EmpiricalStudy.withTransaction { status ->
+            try {
+                OriginalStudy suelo2016 = new OriginalStudy(
+                    acronym : 'Suelo-2016',
+                    site    : 'ETSIA de la US',
+                    date    : 'Octubre 2015',
+                    goal    :
+'''
+Conocer el efecto de compuestos biodegradables y de origen natural (ramnolípidos)  
+en el proceso de fitoextracción de Cu en suelos contaminados.\n
+En otras palabras, estudiar si la adición de ramnolípidos (causa) mejora la 
+fitoextracción de Cu (efecto) en suelos contaminados (población).
+''',
+                    description : 
+'''
+Se toman muestras de dos suelos distintos (Coria y Constantina) que se contaminan 
+artificialmente con Cu (tratamiento) y se distribuyen en macetas. Las muestras 
+se dejan envejecer durante 45 días (tratamiento), se siembran semillas de cebada 
+y de mostaza (instrumentos de medida), se les añade abono (tratamiento) y se les 
+añade JBR-425 a los 15 días (tratamiento). A los 30 días se analiza el contenido 
+de Cu de la biomasa de las plantas (métrica), y la disponibilidad del Cu en suelo 
+(métrica) por dos métodos distintos: extracción con CaCl2 y con EDTA (métodos de 
+médida). El Cu se aplicó en tres concentraciones: 0, 500 y 1000 mg/kg, por lo 
+que se obtuvieron 6 grupos de tratamiento combinando las 3 concentraciones de Cu 
+con la adición o no de JBR-425. Se toma como grupo de control al que no se 
+contaminó con cobre ni se le adicionó JBR-425.
+'''
+                ).save()
+
+                println("suelo2016 = $suelo2016")
+
+                Replication suelo2018 = new Replication(
+                    acronym: 'Suelo-2018',
+                    base: suelo2016,
+                    type: ReplicationType.INTERNAL,
+                    purposes: [Purpose.VERIFY_RESULTS,Purpose.GENERALIZE_RESULTS],
+                    site: 'ETSIA de la US',
+                    date: 'Marzo 2018',
+                ).save()
+
+                suelo2016.addToReplications(suelo2018).save()
+
+                Change change1 = new Change(
+                    name: 'Cultivo en invernadero',
+                    dimension: ChangeDimension.CONTEXT,
+                    affectedElement: 'Medio',
+                    baseSituation: 'El experimento se llevó a cabo en una cámara de cultivo.',
+                    replicationSituation: 'El experimento se llevó a cabo en un invernadero.',
+                    purpose: 'Simular las condiciones naturales.'
+                )
+
+                ValidityEffect effect1 = new ValidityEffect(
+                    validity: Validity.EXTERNAL_VALIDITY,
+                    effect: Effect.INCREASE,
+                    rationale: 'generaliza los resultados para condiciones más cercanas a las naturales.'
+                )
+
+                change1.addToEffects(effect1)
+                       .save()
+
+                Change change2 = new Change(
+                    name: 'Sólo se cultiva mostaza',
+                    dimension: ChangeDimension.PROTOCOL,
+                    affectedElement: ProtocolElement.MEASUREMENT_INSTRUMENTS,
+                    baseSituation: 'Se utilizaron dos plantas: cebada y mostaza.',
+                    replicationSituation: 'Se utilizó sólo la planta de mostaza.',
+                    purpose: 'Usar la planta con mayor capacidad de fitoextracción de Cu'
+                    //comments: 'Al utilizar un solo tipo de planta (mostaza), ya no afecta a los resultados, es decir no está operacionalizada.' 
+                )
+
+                ValidityEffect effect2 = new ValidityEffect(
+                    validity: Validity.CONSTRUCT_VALIDITY,
+                    effect: Effect.INCREASE,
+                    rationale: 'Usando mostaza se mide mejor el efecto mediante el Cu fitoextraído.'
+                )
+
+                change2.addToEffects(effect2)
+                       .save()
+
+                Change change3 = new Change(
+                    name: 'Sólo se usa el suelo de Constantina',
+                    dimension: ChangeDimension.POPULATION,
+                    affectedElement: 'Tipo de suelo',
+                    baseSituation: 'Se tomaron muestras de dos tipos de suelo: Coria (pH=7.8) y Constantina (pH=5.5).',
+                    replicationSituation: 'Se tomaron muestras solo del suelo de Constantina.',
+                    purpose: 'Usar un suelo del que se pueda extraer el metal. En el suelo de Coría el Cu está fuertemente absorbido y no se puede fitoextraer.'
+                    //comments: 'Al utilizar únicamente el suelo de Constantina, ya no afecta a los resultados, es decir no está operacionalizado' 
+                )
+
+                ValidityEffect effect3 = new ValidityEffect(
+                    validity: Validity.CONSTRUCT_VALIDITY,
+                    effect: Effect.INCREASE,
+                    rationale: 'Se asegura que el metal puede ser fitoextraído, que es el efecto que se quiere medir.'
+                    //comments: 'El efecto es extraer el Cu que hay en el suelo.  En el suelo de Coría no se podía extraer y por tanto no se puede medir'
+                )
+
+                change3.addToEffects(effect3)
+                       .save()
+
+                Change change4 = new Change(
+                    name: 'Reducción de la dosis de Cu',
+                    dimension: ChangeDimension.OPERATIONALIZATION,
+                    affectedElement: OperationalizationElement.TREATMENT,
+                    baseSituation: 'Las dosis de Cu añadidas al suelo fueron de 0, 500 y 1000 mg/kg.',
+                    replicationSituation: 'Las dosis de Cu añadidas al suelo fueron de 0, 125, 250 y 500 mg/kg. ',
+                    purpose: 'Ajustar a niveles de Cu no tóxicos para las plantas.'
+                )
+
+				ValidityEffect effect4 = new ValidityEffect(
+                    validity: Validity.CONSTRUCT_VALIDITY,
+                    effect: Effect.INCREASE,
+                    rationale: 'Se ajusta el nivel de Cu a niveles permitidos por las plantas. A dosis mayores, las plantas mueren.',
+					comments: 'La planta es instrumento de medida, si muere no se puede medir.'
+                )
+
+                ValidityEffect effect5 = new ValidityEffect(
+                    validity: Validity.INTERNAL_VALIDITY,
+                    effect: Effect.INCREASE,
+                    rationale: 'Se ajusta el nivel de Cu a niveles permitidos por las plantas que reflejan mejor el contructo.',
+                    comments: 'Permite analizar el efecto en niveles de Cu válidos.'
+                )				
+
+                change4.addToEffects(effect4)
+                       .addToEffects(effect5)
+                       .save()
+
+                Change change5 = new Change(
+                    name: 'Cu aplicado como sulfato de Cu',
+                    dimension: ChangeDimension.OPERATIONALIZATION,
+                    affectedElement: OperationalizationElement.TREATMENT,
+                    baseSituation: 'El Cu se aplicó como Nitrato de Cu.',
+                    replicationSituation: 'El Cu se aplicó como Sulfato de Cu.',
+                    purpose: 'Utilizar el reactivo más accesible.',
+                    comments: 'Afecta al tratamiento.'
+                )
+
+                ValidityEffect effect6 = new ValidityEffect(
+                    validity: Validity.INTERNAL_VALIDITY,
+                    effect: Effect.NEUTRAL,
+                    rationale: 'No afecta a la validez interna, ya que únicamente es un cambio de reactivo por otro equivalente.'
+                )
+
+                change5.addToEffects(effect6)
+                       .save()
+
+                Change change6 = new Change(
+                    name: 'Reducción del tiempo de envejecimiento del suelo',
+                    dimension: ChangeDimension.OPERATIONALIZATION,
+                    affectedElement: OperationalizationElement.TREATMENT,
+                    baseSituation: 'El tiempo de envejecimiento del suelo (desde que se aplica Cu hasta que se siembra) fue de 45 días.',
+                    replicationSituation: 'El tiempo de envejecimiento fue de 15 días.',
+                    purpose: 'Evitar la fijación excesiva del Cu al suelo que dificulta su fitoextracción.',
+                    comments: 'Afecta a la forma de aplicar el Cu, que es parte del tratamiento.'
+                )
+
+                ValidityEffect effect7 = new ValidityEffect(
+                    validity: Validity.CONSTRUCT_VALIDITY,
+                    effect: Effect.INCREASE,
+                    rationale: 'La planta extrae el metal con mayor facilidad al no estar tan retenido y refleja mejor el constructo.',
+                    comments: 'Si está muy retenido, no se puede medir.'
+                )
+
+                ValidityEffect effect7b = new ValidityEffect(
+                    validity: Validity.EXTERNAL_VALIDITY,
+                    effect: Effect.DECREASE,
+                    rationale: 'Reduce la generalización de resultados a suelos contaminados desde hace más tiempo.'
+                )
+
+                change6.addToEffects(effect7)
+                       .addToEffects(effect7b)
+                       .save()
+
+                Change change7 = new Change(
+                    name: 'Incremento del número de macetas por tipo de tratamiento',
+                    dimension: ChangeDimension.PROTOCOL,
+                    affectedElement: ProtocolElement.EXPERIMENTAL_DESIGN,
+                    baseSituation: 'Habia (3x2x2x2) 24 unidades experimentales (3 niveles de Cu, 2 de JBR, 2 tipos de plantas y 2 tipos de suelos). Para cada unidad experimental se prepara una maceta y se repite 3 veces.',
+                    replicationSituation: 'Hay (4x2) 8 unidades experimentales (4 niveles de Cu y 2 de JBR). Para cada unidad experimental se preparan 4 macetas y se colocan en una bandeja. Se repite 3 veces.',
+                    purpose: 'Aumentar el número de macetas para obtener suficiente biomasa.',
+                    comment: 'La unidad experimental es ahora la bandeja. La unidad experimental es el equivalente a los sujetos experimentales en otros campos.'
+                )
+
+                /*
+                ValidityEffect effect8 = new ValidityEffect(
+                    validity: Validity.CONSTRUCT_VALIDITY,
+                    effect: Effect.INCREASE,
+                    rationale: 'Se ha obtenido más biomasa para análisis posteriores.',
+                    comments: 'Facilita las medidas de Cu.'
+                )
+                */
+
+                ValidityEffect effect8b = new ValidityEffect(
+                        validity: Validity.CONCLUSION_VALIDITY,
+                        effect: Effect.INCREASE,
+                        rationale: 'Aumentar el número de sujetos (n) mejora la potencia de los tests estadísticos, reduciendo la probabilidad de obtener un falso negativo (error tipo II).'
+                )
+
+                change7.addToEffects(effect8b)
+                       .save()
+
+                Change change8 = new Change(
+                    name: 'Biomasa obtenida en etapa de fructificación',
+                    dimension: ChangeDimension.OPERATIONALIZATION,
+                    affectedElement: OperationalizationElement.MEASUREMENT_PROCEDURES,
+                    baseSituation: 'La biomasa se recogió cuando las plantas tuvieron entre 2 y 3 hojas verdaderas.',
+                    replicationSituation: 'La biomasa se recogió cuando las plantas alcanzaron la etapa de fructificación.',
+                    purpose: 'Obtener más biomasa al completar las plantas su ciclo vegetativo.',
+                    comments: 'Modifica el procedimiento de medida al recoger las hojas más tarde.'
+                )
+
+                ValidityEffect effect9 = new ValidityEffect(
+                    validity: Validity.CONSTRUCT_VALIDITY,
+                    effect: Effect.INCREASE,
+                    rationale: 'Se ha obtenido más biomasa para análisis posteriores.'
+                )
+
+                change8.addToEffects(effect9)
+                       .save()
+
+                Change change9 = new Change(
+                    name: 'Aumento del volumen de las macetas',
+                    dimension: ChangeDimension.PROTOCOL,
+                    affectedElement: ProtocolElement.EXPERIMENTAL_MATERIAL,
+                    baseSituation: 'Las macetas fueron del tipo tubo de 300 ml.',
+                    replicationSituation: 'Las macetas fueron del tipo cubo de 500 ml.',
+                    purpose: 'Conseguir mayor desarrollo radicular y producir más biomasa.',
+                )
+
+                ValidityEffect effect10 = new ValidityEffect(
+                    validity: Validity.CONSTRUCT_VALIDITY,
+                    effect: Effect.INCREASE,
+                    rationale: 'Se ha obtenido más biomasa para análisis posteriores.'
+                )
+
+                change9.addToEffects(effect10)
+                       .save()
+
+                suelo2018.addToChanges(change1)
+                         .addToChanges(change2)
+                         .addToChanges(change3)
+                         .addToChanges(change4)
+                         .addToChanges(change5)
+                         .addToChanges(change6)
+                         .addToChanges(change7)
+                         .addToChanges(change8)
+                         .addToChanges(change9)
+                         .save()
+            }
+            catch (Exception e) {
+                println "ERROR in populateSuelo ---> ${e.getMessage()}"
+                //status.setRollbackOnly()
+            }
+        }
+    }
+
+    def init = { servletContext ->
+        populateMindfulness()
+        populateSuelo()
+    }
+
+    def destroy = {
+    }
+}

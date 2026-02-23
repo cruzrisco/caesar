@@ -1,0 +1,91 @@
+ul {
+    padding-left:20px;
+}
+
+input[type=text], textarea {
+    width: 600px;
+}
+
+#caesar_icon {
+    padding-right: 10px;
+}
+
+#caesar_acronym {
+    font-size: 24px;
+    letter-spacing: 4px;
+    font-style: normal;
+    font-weight: normal;
+}
+
+#content {
+    padding-bottom: 20px;
+}
+
+.footer {
+    margin-top: 10px;
+}
+
+.footer img.social-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 20px;
+    margin-top: 10px;
+}
+
+.footer p.social-address {
+    font-size: small;
+}
+
+div.caesar {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    width: 95%;
+}
+
+table.caesar {
+    margin: 0;
+    width: 100%;
+}
+
+table.caesar th {
+    min-width: 15%;
+}
+
+table.caesar th,
+table.caesar td {
+    padding: 0.5em;
+    padding-right: 1em;
+    vertical-align: top;
+    border-color: #5a6268;
+    background-image: none;
+}
+
+table.caesar.replication {
+    /*table-layout: fixed;*/
+}
+
+th.caesar.change-name {
+    white-space: nowrap;
+    width: 100%;
+}
+
+th.caesar.change-validity,
+td.caesar.change-validity {
+    padding: 0.35em;
+    font-size: small;
+    text-align: center;
+}
+
+/* to avoid th:hover, tr:hover in main.css in Grails 5 */
+table.caesar th:hover {
+    background-color: #efefef;
+}
+
+table.caesar tr:hover {
+    background-color: white;
+}
+
+span.caesar {
+    font-weight: bold;
+}
+
