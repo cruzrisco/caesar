@@ -2,7 +2,7 @@
 <img width="166" height="67" alt="caesar1" src="https://github.com/user-attachments/assets/116ab7ce-02a9-4965-a41c-3ba2dff671ed" />
 </p>
 
-The steps to follow to work with Caesar are:
+The steps to follow to work with CÆSAR are:
 
 1.- Create an experiment, registering its description, as well as, among other details, the place where it is conducted, the date, and its objectives.
 
