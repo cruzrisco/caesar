@@ -4,6 +4,11 @@
 
 The purpose of the CÆSAR tool is to enable the quantification of the impact of changes in experimental validity, making it possible to visually depict the evolution of the family of experiments.
 The tool is intended for researchers, students, and professionals working in the area of empirical software engineering.
+
+
+For the development of Caesar, the Model–View–Controller (MVC) architectural pattern was applied. Grails was used, a web application framework built on top of the Java Virtual Machine that uses the Groovy programming language.
+CÆSAR is deployed for demonstration http://caesar.us.es/
+
 The steps to follow to work with CÆSAR are:
 
 1.- Create an experiment, registering its description, as well as, among other details, the place where it is conducted, the date, and its objectives.
