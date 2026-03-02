@@ -7,7 +7,7 @@ The tool is intended for researchers, students, and professionals working in the
 
 
 For the development of Caesar, the Model–View–Controller (MVC) architectural pattern was applied. Grails was used, a web application framework built on top of the Java Virtual Machine that uses the Groovy programming language.
-CÆSAR is deployed for demonstration http://caesar.us.es/
+CÆSAR is deployed for demonstration at http://caesar.us.es/
 
 The steps to follow to work with CÆSAR are:
 
